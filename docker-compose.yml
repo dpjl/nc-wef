@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+  nc-wef:
+    restart: always
+    image: dpjl/nc-wef:master
+    volumes:
+      - ./test1:/shared1
+      - ./test2:/shared2
+    environment:
+      - SHARED_FOLDER_1=/shared1
+      - OWNERS_1={"dav":"admin"}
+      - SHARED_FOLDER_2=/shared2
+      - OWNERS_2={"dav":"admin"}
+
