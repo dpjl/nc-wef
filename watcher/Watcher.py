@@ -11,8 +11,6 @@ from watcher.FolderHandler import FolderHandler
 class Watcher(Thread):
 
     def __init__(self, folder_path, owners):
-        print("Start monitoring")
-
         if not os.path.exists(folder_path):
             print(f"Configuration error: {folder_path} does not exist.")
             sys.exit(1)
@@ -65,14 +63,14 @@ class Watcher(Thread):
             for nc_prefix, user in self.owners.items():
                 # - scan files
                 occ_cmd = f"occ files:scan {user} --path=/{user}/files/{self.folder_name}"
-                cmd = f"docker exec -u www-data ${nc_prefix}-nc-1 php {occ_cmd}"
-                print(f"Execute {cmd}")
+                cmd = f"docker exec -u www-data {nc_prefix}-nc-1 php {occ_cmd}"
+                print(f"Execute: {cmd}")
                 os.system(cmd)
 
                 # - memories index files
-                occ_cmd = f"occ memories:index --use={user} --folder=/{self.folder_name}"
-                cmd = f"docker exec -u www-data ${nc_prefix}-nc-1 php {occ_cmd}"
-                print(f"Execute {cmd}")
+                occ_cmd = f"occ memories:index --user={user} --folder=/{self.folder_name}"
+                cmd = f"docker exec -u www-data {nc_prefix}-nc-1 php {occ_cmd}"
+                print(f"Execute: {cmd}")
                 os.system(cmd)
         return True
 
@@ -86,7 +84,7 @@ class Watcher(Thread):
                 print("Stop thread in charge of watching changes")
                 return
             sync_delay = 10
-            print("Watcher has been alerted of at least one change. Wait {sync_delay} seconds and update.")
+            print(f"Watcher has been alerted of at least one change. Wait {sync_delay} seconds and update.")
             if not self.something_happened.wait(sync_delay):
                 if self.__scan_and_index():
                     print("Wait for next modification...")
