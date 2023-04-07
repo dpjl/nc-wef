@@ -8,4 +8,4 @@ RUN apk add --update --no-cache git && pip install --no-cache-dir -r requirement
 COPY main.py .
 COPY watcher ./watcher
 
-CMD [ "python", "./main.py" ]
+CMD [ "python", "-u", "./main.py" ]

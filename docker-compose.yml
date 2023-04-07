@@ -4,8 +4,9 @@ services:
 
   nc-wef:
     restart: always
-    image: dpjl/nc-wef:master
+    image: dpjl/nc-wef:main
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./test1:/shared1
       - ./test2:/shared2
     environment:

@@ -1,5 +1,6 @@
 import ast
 import os
+import time
 
 from watcher.Watcher import Watcher
 
@@ -17,6 +18,7 @@ if __name__ == '__main__':
         watcher = Watcher(shared_folder, owners)
         watcher.start()
         watcher_list.append(watcher)
+        time.sleep(1)
 
     if len(watcher_list) != 0:
         try:
