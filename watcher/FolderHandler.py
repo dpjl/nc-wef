@@ -12,7 +12,19 @@ class FolderHandler(FileSystemEventHandler):
     def __init__(self, watcher: "Watcher"):
         self.watcher = watcher
 
-    def on_any_event(self, event: FileSystemEvent):
+    def on_moved(self, event: FileSystemEvent):
+        if not event.is_directory:
+            self.watcher.wake_up(Path(event.src_path).parent.as_posix())
+        else:
+            self.watcher.wake_up(Path(event.src_path).as_posix())
+
+    def on_created(self, event: FileSystemEvent):
+        if not event.is_directory:
+            self.watcher.wake_up(Path(event.src_path).parent.as_posix())
+        else:
+            self.watcher.wake_up(Path(event.src_path).as_posix())
+
+    def on_deleted(self, event: FileSystemEvent):
         if not event.is_directory:
             self.watcher.wake_up(Path(event.src_path).parent.as_posix())
         else:
