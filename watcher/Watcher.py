@@ -62,13 +62,13 @@ class Watcher(Thread):
             print(f"Update after changes in path {modified_path}")
             for nc_prefix, user in self.owners.items():
                 # - scan files
-                occ_cmd = f"occ files:scan {user} --path=/{user}/files{modified_path}"
+                occ_cmd = f'occ files:scan {user} --path="/{user}/files{modified_path}"'
                 cmd = f"docker exec -u www-data {nc_prefix}-nc-1 php {occ_cmd}"
                 print(f"Execute: {cmd}")
                 os.system(cmd)
 
                 # - memories index files
-                occ_cmd = f"occ memories:index --user={user} --folder={modified_path}"
+                occ_cmd = f'occ memories:index --user={user} --folder="{modified_path}"'
                 cmd = f"docker exec -u www-data {nc_prefix}-nc-1 php {occ_cmd}"
                 print(f"Execute: {cmd}")
                 os.system(cmd)
