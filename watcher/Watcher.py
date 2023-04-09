@@ -82,10 +82,12 @@ class Watcher(Thread):
                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         display = False
         for line in iter(process.stdout.readline, b''):
+            if not line:
+                break
             if line.startswith("="):
                 display = True
             if display:
-                print(line)
+                print(line, end="")
 
     def run(self):
         print("Start thread in charge of watching changes")
