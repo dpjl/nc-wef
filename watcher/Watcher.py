@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 from pathlib import Path
 from threading import Event, Thread, Lock
@@ -67,12 +68,24 @@ class Watcher(Thread):
                 print(f"Execute: {cmd}")
                 os.system(cmd)
 
-                # - memories index files
-                occ_cmd = f'occ memories:index --user={user} --folder="{modified_path}"'
-                cmd = f"docker exec -u www-data {nc_prefix}-nc-1 php {occ_cmd}"
-                print(f"Execute: {cmd}")
-                os.system(cmd)
+                self.__call_memories_index(nc_prefix, user, modified_path)
         return True
+
+    @staticmethod
+    def __call_memories_index(nc_prefix, user, modified_path):
+        occ_cmd = f'occ memories:index --user={user} --folder="{modified_path}"'
+        cmd = f"docker exec -u www-data {nc_prefix}-nc-1 php {occ_cmd}"
+        print(f"Execute: {cmd}")
+        # os.system(cmd)
+        process = subprocess.Popen(cmd, shell=True,
+                                   universal_newlines=True, bufsize=1,
+                                   stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        display = False
+        for line in iter(process.stdout.readline, b''):
+            if line.startswith("="):
+                display = True
+            if display:
+                print(line)
 
     def run(self):
         print("Start thread in charge of watching changes")
